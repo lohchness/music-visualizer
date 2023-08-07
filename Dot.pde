@@ -1,13 +1,22 @@
 class Dot {
-  int xpos, ypos;
-  int base_diameter, curr_diameter;
-  int xvec, yvec;
-  
-  Dot() {
-    xpos = 0;
-    ypos = int(random(HEIGHT + 1));
+    PVector position;
+    PVector vector;
     
-    base_diameter = int(random(10 + 1));
-    curr_diameter = base_diameter;
-  }
+    float xpos, ypos;
+    float base_diameter, curr_diameter;
+    float xvec, yvec;
+    
+    Dot() {
+        xpos= WIDTH / 2 - 100;
+        ypos= HEIGHT / 2;
+        
+        base_diameter = random(10 + 1);
+        curr_diameter = base_diameter;
+        
+        
+        // TODO: Make bigger particles travel slower and smaller particles travel faster
+        // TODO: Randomize start location but make sure it flies across the screen
+        xvec= random(3);
+        yvec= random( - 1, 1);
+    }
 }
