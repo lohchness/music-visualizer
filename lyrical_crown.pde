@@ -8,7 +8,7 @@ import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
 final int WIDTH = 1000, HEIGHT = 500;
-String audioFileName = "spaceplusone.mp3"; 
+String audioFileName = "lemonia.mp3"; 
 float fps = 60;
 float smooth_factor = .2;
 
@@ -16,6 +16,9 @@ float smooth_factor = .2;
 AudioPlayer track;
 FFT fft;
 Minim minim;
+
+BeatDetect beat;
+//BeatListener bl;
    
 // General
 int bands = 512; // must be multiple of two
@@ -51,18 +54,19 @@ void setup() {
     
     minim = new Minim(this);
     track = minim.loadFile(audioFileName, 2048);
+    //beat = new BeatDetect(track.bufferSize(), track.sampleRate());
+    beat = new BeatDetect();
+    //beat.setSensitivity(0);
+    
     
     track.loop();
-    //track.pause();
+
     
     fft = new FFT(track.bufferSize(), track.sampleRate());
     
     fft.linAverages(bands);
     //fft.logAverages(22,BARS);
-    //track.mute();
-    
-    //track.cue(60000);
-    
+        
     spray = new Spray();
     
     bar_length = new float[fft.specSize()];
@@ -76,9 +80,11 @@ void setup() {
 
 
 void draw() {
-    
+        
     
     fft.forward(track.mix);
+    beat.detect(track.mix);
+
     
     spectrum = new float[bands];
     
@@ -97,47 +103,32 @@ void draw() {
     noFill();
     
     //drawAll(sum);
-    //draw_base();
+    smooth(8);
+    draw_base();
+    sprayDots();
     draw_bars();
-    //sprayDots();
+
     
     
     if(keyPressed) {
-        if (keyCode == LEFT || key == 'l') {
+        if (key == 'l') {
             track.skip(10000);
         }
         if (key == 'p') {
             track.loop();
         }
-}
+        if (key == 'k') {
+            if (track.isPlaying()) track.pause();
+            else track.play();
+        }
+        if (key == 'j') {
+            track.skip(-10000);
+        }
+    }
+    //print(track.mix.level() + "\n");
 }
 
-void sprayDots() {
-    //if (frameCount % fps == 0) {
-    spray.addDot(new Dot()); 
-//}
-    
-    for (Dot dot : spray.dots) {
-        
-        
-        
-        fill(255);
-        ellipse(dot.xpos, dot.ypos, dot.curr_diameter, dot.curr_diameter);
-        dot.xpos += dot.xvec;
-        dot.ypos += dot.yvec;
-        
-}
-    
-    
-    //clean up
-    for (int i = 0; i < spray.dots.size(); i++) {
-        if (spray.dots.get(i).xpos> WIDTH || spray.dots.get(i).ypos > HEIGHT) {
-            spray.removeDot(spray.dots.get(i));
-            //i--;
-        }
-}
-    
-}
+
 
 int sphereRadius;
 

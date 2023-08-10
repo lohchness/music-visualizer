@@ -2,8 +2,10 @@ final int BARS = 63;
 final float BASE_THICKNESS = 0.5;
 final int BAR_THICKNESS = 4;
 final float BAR_MAX_LENGTH = -250;
+final int NUM_BARS = 5;
 
-final int startX = 50, startY = 400;
+
+final int startX = 150, startY = 400;
 
 final int BAR_WIDTH = 10;
 final int BAR_GAP = 15;
@@ -32,13 +34,12 @@ float a = (log(20000 - 20) / log(bands));
 void draw_bars() {
     
     int currx = startX;
-    float extendingLinesMax = 50;
     
     //print(fft.specSize()); // 1025
     //print("\n");
     
     //process specsize to bar_length array
-    fill(255);
+    fill(#ec8c00);
 
     for (int i = 0; i < fft.specSize(); i++) {
 
@@ -47,29 +48,45 @@ void draw_bars() {
         //target_length[int(map(i, 0, fft.specSize(), 0, BARS))] -= sum[int(map(i, 0, fft.specSize(), 0, 30))];
     }
     
-    
-    //for (int i=0; i<fft.avgSize(); i++) {
-
-        
-    //    //float freq = pow(i,a) + 20;
-    //    //float freq = 
-        
-        
-    //    float amp = fft.getAvg(i);
-        
-    //    float bandDB = 20 * log(2 * amp / fft.timeSize());
-        
-    //    target_length[int(map(i, 0, bands, 0, BARS))] -= map(bandDB, 0, -150, 0, height);
-        
-    //}
-    
 
     
-    for (int i = 0; i < BARS; i++) {
+    
+    float counter = 0;
+    
+    for (int i = 0; i < BARS - 10; i++) {
+        
         
         if (target_length[i] < BAR_MAX_LENGTH) {
             target_length[i] = BAR_MAX_LENGTH;
         }
+        
+        // SHITTY SOLUTION TO A PROBLEM
+        // if first bars get average of next bars 
+        if (i==0) {
+            target_length[0] = (target_length[0] + target_length[3] + target_length[5]) / 4;
+        }
+        else if (i == 1) {
+            target_length[1] = (target_length[1] + target_length[4] + target_length[6]) / 4;
+        }
+        else if (i == 2) {
+            target_length[2] = (target_length[2] + target_length[5] + target_length[7]) / 4;
+        }
+        
+        //if (target_length[i] < BAR_MAX_LENGTH) {
+        //    target_length[i] = BAR_MAX_LENGTH;
+        //}
+        
+        
+         //increase size of these bars according to sine wave
+        if (i > int(BARS * 1/3)) {
+            //target_length[i] *= 4;
+            //float mapped = map(target_length[i], 0, BAR_MAX_LENGTH, 0, 1);
+            //float increased = ((pow(sin(mapped),2))/2)+.5;
+            float mult = ((pow(sin(counter),2)) * 2 )+1;
+            target_length[i] *= mult;
+            counter += .15;
+        }
+        
         
         float targetX = target_length[i];
         float dx = targetX - bar_length[i];
@@ -86,6 +103,11 @@ void draw_bars() {
         
         // bass
         //if (i < 10) {
+            
+        
+        
+            
+        
         rect(currx, startY, BAR_WIDTH, bar_length[i]);
         //}
         //else{
@@ -97,4 +119,18 @@ void draw_bars() {
         
         target_length[i] = 0;
     }
+    
+    // draw bars before first one (bass)
+    // smooth out left side of the visualizer, looks more like a wave than a slope
+    int preX = startX - 15;
+    //fill(150);
+    
+    for (int i=NUM_BARS; i>0; i--) {
+        float mapped = (map(bar_length[ NUM_BARS - i ],0,BAR_MAX_LENGTH, 0, 1));
+        //float bar_height = ((-(pow((mapped - 1),2))) + 1) * BAR_MAX_LENGTH;
+        float bar_height = pow(sin(mapped),2) * BAR_MAX_LENGTH;
+        rect(preX, startY, BAR_WIDTH,  bar_height);
+        preX -= 15;
+    }
+    
 }
