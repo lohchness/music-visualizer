@@ -1,4 +1,4 @@
-final int MAX_VELOCITY = 1;
+final float MIN_VELOCITY = 0.3, MAX_VELOCITY = 1;
 final float MAX_DIAMETER = 7.5;
 
 // type 1 dot
@@ -28,11 +28,15 @@ class Dot {
         curr_diameter = base_diameter;
         
         
-                // TODO: Randomize start location but make sure it flies across the screen
+        // TODO: Randomize start location but make sure it flies across the screen
         
         //vector.x = random(3);
-        vector.x = MAX_VELOCITY - map(base_diameter, 0, MAX_DIAMETER + 1, 0, MAX_VELOCITY);
+        vector.x = max( MAX_VELOCITY - map(base_diameter, 0, MAX_DIAMETER + 1, 0, MAX_VELOCITY) , MIN_VELOCITY);
         vector.y = random(-T1_Y_VECTOR, T1_Y_VECTOR);
+        while (vector.y > vector.x) {
+            vector.y /= 1.5;
+            vector.x *= 1.5;
+        }
         //xvec= random(3);
         //yvec= random( - 1, 1);
     }

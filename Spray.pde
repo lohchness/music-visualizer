@@ -2,7 +2,7 @@ class Spray {
     ArrayList<Dot> dots;
     
     Spray() {
-        dots= new ArrayList<Dot>();
+        dots = new ArrayList<Dot>();
     }
     
     void addDot(Dot dot) {
@@ -27,8 +27,8 @@ void sprayDots() {
         fill(255);
         ellipse(dot.position.x, dot.position.y, dot.curr_diameter, dot.curr_diameter);
         //dot.position.add( dot.vector );
-        dot.position.x += dot.vector.x * (curr_level + 1.2);
-        dot.position.y += dot.vector.y * (curr_level + 1.2);
+        dot.position.x += dot.vector.x * (curr_level + .5);
+        dot.position.y += dot.vector.y * (curr_level + .5);
         
         if (dot.curr_diameter > dot.base_diameter) {
             dot.curr_diameter -= 0.05;
@@ -46,9 +46,9 @@ void sprayDots() {
     
     //clean up
     for (int i = 0; i < spray.dots.size(); i++) {
-        if (spray.dots.get(i).position.x> WIDTH || spray.dots.get(i).position.y > HEIGHT) {
-            spray.removeDot(spray.dots.get(i));
-            //i--;
+        Dot dot = spray.dots.get(i);
+        if (dot.position.x > WIDTH + dot.curr_diameter || dot.position.y > HEIGHT + dot.curr_diameter) {
+            spray.removeDot(dot);
         }
     }
     

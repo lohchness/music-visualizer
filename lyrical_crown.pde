@@ -75,17 +75,15 @@ void setup() {
         bar_length[i] = 0;
         target_length[i] = 0;
     }
+    
+    //rec(); // export to mp4
 }
 
 
 
 void draw() {
-        
-    
     fft.forward(track.mix);
     beat.detect(track.mix);
-
-    
     spectrum = new float[bands];
     
     for (int i = 0; i < fft.avgSize(); i++)
@@ -107,25 +105,6 @@ void draw() {
     draw_base();
     sprayDots();
     draw_bars();
-
-    
-    
-    if(keyPressed) {
-        if (key == 'l') {
-            track.skip(10000);
-        }
-        if (key == 'p') {
-            track.loop();
-        }
-        if (key == 'k') {
-            if (track.isPlaying()) track.pause();
-            else track.play();
-        }
-        if (key == 'j') {
-            track.skip(-10000);
-        }
-    }
-    //print(track.mix.level() + "\n");
 }
 
 
@@ -239,4 +218,25 @@ float getGroundY(float groundX) {
     float groundY = sin(radians(angle + frameCount * 2)) * unit * 1.25 + groundLineY - unit * 1.25;
     
     return groundY;
+}
+
+void keyPressed() {
+    if (key == 'l') {
+        track.skip(10000);
+    }
+    if (key == 'p') {
+        track.loop();
+    }
+    if (key == 'k') {
+        if (track.isPlaying()) track.pause();
+        else track.play();
+    }
+    if (key == 'j') {
+        track.skip(-10000);
+    }
+    if (key == 'r') {
+        track.rewind();
+        spray = new Spray();
+        track.pause();
+    }    
 }

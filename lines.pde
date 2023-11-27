@@ -11,7 +11,7 @@ final int BAR_WIDTH = 10;
 final int BAR_GAP = 15;
 final float DIVIDE_THRESH = 1.01;
 
-final float EASING = 0.2;
+final float EASING = 0.15;
 
 
 void draw_base() {
@@ -61,7 +61,7 @@ void draw_bars() {
         }
         
         // SHITTY SOLUTION TO A PROBLEM
-        // if first bars get average of next bars 
+        // if first few number of bars then get average of next bars to smooth out curve
         if (i==0) {
             target_length[0] = (target_length[0] + target_length[3] + target_length[5]) / 4;
         }
@@ -77,17 +77,21 @@ void draw_bars() {
         //}
         
         
-         //increase size of these bars according to sine wave
+         //increase size and sensitivity of these bars according to sine wave
         if (i > int(BARS * 1/3)) {
             //target_length[i] *= 4;
             //float mapped = map(target_length[i], 0, BAR_MAX_LENGTH, 0, 1);
             //float increased = ((pow(sin(mapped),2))/2)+.5;
-            float mult = ((pow(sin(counter),2)) * 2 )+1;
+            float mult = ((pow(sin(counter),2)) * 5 ) + 1;
             target_length[i] *= mult;
             counter += .15;
         }
         
+        if (target_length[i] < BAR_MAX_LENGTH) {
+            target_length[i] = BAR_MAX_LENGTH;
+        }
         
+        // ease rectangle transform
         float targetX = target_length[i];
         float dx = targetX - bar_length[i];
         bar_length[i] += dx * EASING;
@@ -97,26 +101,9 @@ void draw_bars() {
         //}
         //bar_length[i] = constrain(bar_length[i], 0, BAR_MAX_LENGTH);
         //print(bar_length[i] + "\n");
-        
-        
-        // draw bars
-        
-        // bass
-        //if (i < 10) {
-            
-        
-        
-            
-        
+                
         rect(currx, startY, BAR_WIDTH, bar_length[i]);
-        //}
-        //else{
-            //rect(currx, startY, BAR_WIDTH, bar_length[i]);
-            
-        //}
         currx += 15;
-        
-        
         target_length[i] = 0;
     }
     
