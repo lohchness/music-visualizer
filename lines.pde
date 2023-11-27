@@ -5,7 +5,7 @@ final float BAR_MAX_LENGTH = -250;
 final int NUM_BARS = 5;
 
 
-final int startX = 150, startY = 400;
+final int startX = 150, startY = 350;
 
 final int BAR_WIDTH = 10;
 final int BAR_GAP = 15;
@@ -39,7 +39,6 @@ void draw_bars() {
     //print("\n");
     
     //process specsize to bar_length array
-    fill(#ec8c00);
 
     for (int i = 0; i < fft.specSize(); i++) {
 

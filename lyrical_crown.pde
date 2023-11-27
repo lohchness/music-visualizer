@@ -8,7 +8,8 @@ import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
 final int WIDTH = 1000, HEIGHT = 500;
-String audioFileName = "lemonia.mp3"; 
+float BLUR_PARAM = .9;
+String audioFileName = "thegirl.mp3", title;
 float fps = 60;
 float smooth_factor = .2;
 
@@ -31,6 +32,8 @@ Spray spray;
 float unit;
 int groundLineY;
 PVector center;
+//color[] hex_values = new color[];
+// #ec8c00  #e5cd00   #931fe6
 
 // other constants
 float STROKE_MULT = 4;
@@ -58,10 +61,8 @@ void setup() {
     beat = new BeatDetect();
     //beat.setSensitivity(0);
     
-    
     track.loop();
 
-    
     fft = new FFT(track.bufferSize(), track.sampleRate());
     
     fft.linAverages(bands);
@@ -76,6 +77,7 @@ void setup() {
         target_length[i] = 0;
     }
     
+    title = audioFileName.substring(0, audioFileName.lastIndexOf("."));
     //rec(); // export to mp4
 }
 
@@ -101,9 +103,13 @@ void draw() {
     noFill();
     
     //drawAll(sum);
-    smooth(8);
-    draw_base();
+    //smooth(8);
     sprayDots();
+    filter(BLUR, BLUR_PARAM);
+    
+    draw_base();
+    
+    fill(#ec8c00);
     draw_bars();
 }
 
@@ -221,22 +227,28 @@ float getGroundY(float groundX) {
 }
 
 void keyPressed() {
-    if (key == 'l') {
-        track.skip(10000);
+    switch (key) {
+        case 'l':
+            track.skip(10000);
+            break;
+        case 'p':
+            track.loop();
+            break;
+        case 'k':
+            if (track.isPlaying()) track.pause();
+            else track.play();
+            break;
+        case 'j':
+            track.skip(-10000);
+            break;
+        case 'r':
+            track.rewind();
+            spray = new Spray();
+            track.pause();
+            break;
+        case 'm':
+            track.mute();
+        default:
+            break;
     }
-    if (key == 'p') {
-        track.loop();
-    }
-    if (key == 'k') {
-        if (track.isPlaying()) track.pause();
-        else track.play();
-    }
-    if (key == 'j') {
-        track.skip(-10000);
-    }
-    if (key == 'r') {
-        track.rewind();
-        spray = new Spray();
-        track.pause();
-    }    
 }

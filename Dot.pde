@@ -1,5 +1,5 @@
-final float MIN_VELOCITY = 0.3, MAX_VELOCITY = 1;
-final float MAX_DIAMETER = 7.5;
+final float MIN_VELOCITY = 0.6, MAX_VELOCITY = 2;
+final float MAX_DIAMETER = 4;
 
 // type 1 dot
 final float T1_START_HEIGHT_SPAWN = HEIGHT * 1/3;
