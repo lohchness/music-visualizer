@@ -9,7 +9,7 @@ import ddf.minim.ugens.*;
 
 final int WIDTH = 1000, HEIGHT = 500;
 float BLUR_PARAM = .9;
-String audioFileName = "thegirl.mp3", title;
+String audioFileName = "everlong.mp3", title;
 float fps = 60;
 float smooth_factor = .2;
 
@@ -48,30 +48,33 @@ void settings() {
 }
 
 void setup() {
-    //size(WIDTH, HEIGHT);
     frameRate(fps);
     
     //graphics
-    unit = height / 100;
-    strokeWeight(unit / STROKE_MULT);
-    groundLineY = height * 3 / 4;
-    center = new PVector(width / 2, height * 3 / 4);
+    //unit = height / 100;
+    //strokeWeight(unit / STROKE_MULT);
+    //groundLineY = height * 3 / 4;
+    //center = new PVector(width / 2, height * 3 / 4);
+    
+    spray = new Spray();
     
     minim = new Minim(this);
     track = minim.loadFile(audioFileName, 2048);
-    //beat = new BeatDetect(track.bufferSize(), track.sampleRate());
-    beat = new BeatDetect();
-    //beat.setSensitivity(0);
-    
+    beat = new BeatDetect();    
     track.loop();
+    
+    initializeFFT();
+    
+    title = audioFileName.substring(0, audioFileName.lastIndexOf("."));
+    font = createFont("Gotham Bold", 90);
+    textFont(font);
+    //rec(); // export to mp4
+    track.mute();
+}
 
+void initializeFFT() {
     fft = new FFT(track.bufferSize(), track.sampleRate());
-    
     fft.linAverages(bands);
-    //fft.logAverages(22,BARS);
-        
-    spray = new Spray();
-    
     bar_length = new float[fft.specSize()];
     target_length = new float[fft.specSize()];
     for (int i=0; i<fft.specSize(); i++) {
@@ -79,9 +82,6 @@ void setup() {
         target_length[i] = 0;
     }
     
-    title = audioFileName.substring(0, audioFileName.lastIndexOf("."));
-    font = createFont("Gothic
-    //rec(); // export to mp4
 }
 
 
@@ -89,15 +89,15 @@ void setup() {
 void draw() {
     fft.forward(track.mix);
     beat.detect(track.mix);
-    spectrum = new float[bands];
-    
-    for (int i = 0; i < fft.avgSize(); i++)
-        {
-        spectrum[i] = fft.getAvg(i) / 2;
+     //<>//
+    //spectrum = new float[bands];
+    //for (int i = 0; i < fft.avgSize(); i++)
+    //    {
+    //    spectrum[i] = fft.getAvg(i) / 2;
         
-        // Smooth the FFT spectrum data by smoothing factor
-        sum[i] += (abs(spectrum[i]) - sum[i]) * smooth_factor;
-    }
+    //    // Smooth the FFT spectrum data by smoothing factor
+    //    sum[i] += (abs(spectrum[i]) - sum[i]) * smooth_factor;
+    //}
     
     //Reset canvas
     fill(0);
@@ -106,7 +106,6 @@ void draw() {
     noFill();
     
     //drawAll(sum);
-    //smooth(8);
     sprayDots();
     filter(BLUR, BLUR_PARAM);
     
@@ -115,9 +114,43 @@ void draw() {
     fill(#ec8c00);
     draw_bars();
     
-    
+    //draw title
+    text(title.toUpperCase(), startX - (BAR_GAP * NUM_BARS), startY + 90);
 }
 
+
+void keyPressed() {
+    switch (key) {
+        case 'l':
+            track.skip(10000);
+            break;
+        case 'p':
+            track.loop();
+            break;
+        case 'k':
+            if (track.isPlaying()) track.pause();
+            else track.play();
+            break;
+        case 'j':
+            track.skip(-10000);
+            break;
+        case 'r':
+            track.rewind();
+            spray = new Spray();
+            track.pause();
+            break;
+        case 'm':
+            if (track.isMuted()) track.unmute();
+            else track.mute();
+            
+        default:
+            break;
+    }
+}
+
+
+
+// ---------------------------------------
 
 
 int sphereRadius;
@@ -126,8 +159,6 @@ float spherePrevX;
 float spherePrevY;
 
 int yOffset;
-
-
 
 void drawAll(float[] sum) {
     
@@ -229,31 +260,4 @@ float getGroundY(float groundX) {
     float groundY = sin(radians(angle + frameCount * 2)) * unit * 1.25 + groundLineY - unit * 1.25;
     
     return groundY;
-}
-
-void keyPressed() {
-    switch (key) {
-        case 'l':
-            track.skip(10000);
-            break;
-        case 'p':
-            track.loop();
-            break;
-        case 'k':
-            if (track.isPlaying()) track.pause();
-            else track.play();
-            break;
-        case 'j':
-            track.skip(-10000);
-            break;
-        case 'r':
-            track.rewind();
-            spray = new Spray();
-            track.pause();
-            break;
-        case 'm':
-            track.mute();
-        default:
-            break;
-    }
 }

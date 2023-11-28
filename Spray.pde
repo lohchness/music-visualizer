@@ -39,6 +39,9 @@ void sprayDots() {
         dot.position.x += dot.vector.x * 8/3 * exp(4 * curr_level - 2);
         dot.position.y += dot.vector.y * 8/3 * exp(4 * curr_level - 2);
         
+        
+        
+        
         if (dot.curr_diameter > dot.base_diameter) {
             dot.curr_diameter -= 0.05;
         }

@@ -43,17 +43,14 @@ void draw_bars() {
     for (int i = 0; i < fft.specSize(); i++) {
 
         target_length[int(map(i, 0, fft.specSize(), 0, BARS))] -= abs(fft.getBand(i));
-        
         //target_length[int(map(i, 0, fft.specSize(), 0, BARS))] -= sum[int(map(i, 0, fft.specSize(), 0, 30))];
     }
-    
-
     
     
     float counter = 0;
     
+    
     for (int i = 0; i < BARS - 10; i++) {
-        
         
         if (target_length[i] < BAR_MAX_LENGTH) {
             target_length[i] = BAR_MAX_LENGTH;
@@ -76,11 +73,9 @@ void draw_bars() {
         //}
         
         
-         //increase size and sensitivity of these bars according to sine wave
+         //increase size and sensitivity of latter part of bars according to sine wave
         if (i > int(BARS * 1/3)) {
-            //target_length[i] *= 4;
-            //float mapped = map(target_length[i], 0, BAR_MAX_LENGTH, 0, 1);
-            //float increased = ((pow(sin(mapped),2))/2)+.5;
+            //float mult = ((pow(sin(mapped),2))/2)+.5;
             float mult = ((pow(sin(counter),2)) * 5 ) + 1;
             target_length[i] *= mult;
             counter += .15;
@@ -94,29 +89,22 @@ void draw_bars() {
         float targetX = target_length[i];
         float dx = targetX - bar_length[i];
         bar_length[i] += dx * EASING;
-        
-        //if (bar_length[i] < BAR_MAX_LENGTH) {
-        //    bar_length[i] = BAR_MAX_LENGTH;
-        //}
-        //bar_length[i] = constrain(bar_length[i], 0, BAR_MAX_LENGTH);
-        //print(bar_length[i] + "\n");
-                
+
         rect(currx, startY, BAR_WIDTH, bar_length[i]);
         currx += 15;
         target_length[i] = 0;
     }
     
-    // draw bars before first one (bass)
+    // draw bars before first
     // smooth out left side of the visualizer, looks more like a wave than a slope
-    int preX = startX - 15;
-    //fill(150);
+    int preX = startX - BAR_GAP;
     
     for (int i=NUM_BARS; i>0; i--) {
         float mapped = (map(bar_length[ NUM_BARS - i ],0,BAR_MAX_LENGTH, 0, 1));
         //float bar_height = ((-(pow((mapped - 1),2))) + 1) * BAR_MAX_LENGTH;
         float bar_height = pow(sin(mapped),2) * BAR_MAX_LENGTH;
         rect(preX, startY, BAR_WIDTH,  bar_height);
-        preX -= 15;
+        preX -= BAR_GAP;
     }
     
 }
