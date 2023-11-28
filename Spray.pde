@@ -26,11 +26,18 @@ void sprayDots() {
         
         fill(255);
         ellipse(dot.position.x, dot.position.y, dot.curr_diameter, dot.curr_diameter);
-        //dot.position.add( dot.vector );
+
         //dot.position.x += dot.vector.x * pow((curr_level + 1.5),2);
         //dot.position.y += dot.vector.y * pow((curr_level + 1.5),2);
-        dot.position.x += dot.vector.x * 8/3 * exp(curr_level - 1);
-        dot.position.y += dot.vector.y * 8/3 * exp(curr_level - 1);
+        
+        //dot.position.x += dot.vector.x * 8/3 * exp(curr_level - 1);
+        //dot.position.y += dot.vector.y * 8/3 * exp(curr_level - 1);
+        
+        //dot.position.x += dot.vector.x * 3 * pow((curr_level + .7),2);
+        //dot.position.y += dot.vector.y * 3 * pow((curr_level + .7),2);
+        
+        dot.position.x += dot.vector.x * 8/3 * exp(4 * curr_level - 2);
+        dot.position.y += dot.vector.y * 8/3 * exp(4 * curr_level - 2);
         
         if (dot.curr_diameter > dot.base_diameter) {
             dot.curr_diameter -= 0.05;

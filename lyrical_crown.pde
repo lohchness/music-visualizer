@@ -35,6 +35,8 @@ PVector center;
 //color[] hex_values = new color[];
 // #ec8c00  #e5cd00   #931fe6
 
+PFont font;
+
 // other constants
 float STROKE_MULT = 4;
 int BANDS_PER_OCTAVE = 8;
@@ -78,6 +80,7 @@ void setup() {
     }
     
     title = audioFileName.substring(0, audioFileName.lastIndexOf("."));
+    font = createFont("Gothic
     //rec(); // export to mp4
 }
 
@@ -111,6 +114,8 @@ void draw() {
     
     fill(#ec8c00);
     draw_bars();
+    
+    
 }
 
 
