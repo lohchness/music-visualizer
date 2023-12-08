@@ -1,7 +1,7 @@
 # music-visualizer
 WIP Processing project for a music visualizer
 
-https://github.com/lohchness/music-visualizer/assets/50405970/3fccdef7-e3b3-41bf-8190-21b8c788306c
+[![](https://img.youtube.com/vi/5qB2VDdLEVU/hqdefault.jpg)](https://www.youtube.com/embed/5qB2VDdLEVU)
 
 ___
 
